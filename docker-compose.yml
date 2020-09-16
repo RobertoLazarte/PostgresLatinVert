@@ -1,0 +1,36 @@
+version: "3.7"
+
+volumes:
+  db_vol: # Database Persistent Volume - uses default driver and settings
+  
+networks:
+  backend: # Back end Virtual Network for 'api_renach', 'db' and 'pgadmin' Containers  
+
+services:
+      
+  db: # DB Engine Container
+    image: postgres_latin:1.0
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5400:5432"      
+    volumes:
+      - db_vol:/var/lib/postgresql/data # Mount Volume to Postgres Data directory
+    environment:
+      POSTGRES_USER: "vert"
+      POSTGRES_PASSWORD: "vert2020"
+      POSTGRES_DB: "cerco"
+    networks:
+      - backend      
+    restart: always
+
+  pgadmin: # PGAdmin Container - PostgreSQL GUI Admin _ para acessar o banco e acompanhar alterações
+    image: dpage/pgadmin4
+    ports:
+      - "8080:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@example.com"
+      PGADMIN_DEFAULT_PASSWORD: "vert2020"
+    networks:
+      - backend 
